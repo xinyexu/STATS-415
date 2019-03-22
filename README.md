@@ -39,6 +39,7 @@ Part 2 (3/21):   Generalized Additive Models (GAMs)
 Upcoming lecture topics (subject to change)
 
 =====================================================
+
 Trees
 
 Ensemble methods
