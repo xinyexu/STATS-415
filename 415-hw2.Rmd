@@ -1,0 +1,60 @@
+---
+title: "STATS415_HW1_Xinye Xu_ (xinyexu) _ GSI:Eli"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+## q2
+(a) With all variables and no interactions in the mdoel, the R-squared: 0.8734,	Adjusted R-squared: 0.8698, which indicate a good fit.But from the summary of all variables, there are several insignificant variables: Population, Education, Urban, US. Coefficients of these 4 variables are much closer to zero. Based on the residual diagnostic plot, it suggests a random pattern, which follows the assumption. 
+```{r}
+library('ISLR')
+m_a <- lm(Sales ~ . , data= Carseats)
+str(Carseats) # Factor: ShelveLoc, Urban, US
+summary(m_a)
+plot(m_a$residuals ~ m_a$fitted)
+abline(h=0)
+```
+
+(b) Follow the summary information above, CompPrice, Income, Advertising, Price, ShelveLoc, Age have significant p-values,which are less than 0.05. 
+For the dummy variable Urban (pvalue = 0.277), the baseline is UbbanNo while the null hypothesis is that coefficient of this dummy variable is zero, and alterntive is not zero. That also means null hypothesis is there is no influence of Urban to Sales, alternatie is there is influence of Urban to Sales. As the pvalue > 0.05, the null should not be rejected. 
+
+(c) Drop all the variables that are not significant in the full model. The new and no interactions model's Multiple R-squared:  0.872,	Adjusted R-squared:  0.8697, compared with full model's R-squared: 0.8734,	Adjusted R-squared: 0.8698. The new model has smaller  R-squared and Adjusted R-squared, which seems to suggest a less fit. 
+```{r}
+m_c <- lm(Sales ~ CompPrice + Income + Advertising  + Price  + ShelveLoc  + Age , data= Carseats)
+summary(m_c)
+```
+
+(d) In the anova test, the p-value of the test is 0.358. It suggests that the fitted model m_a is not significantly different from reduced model m_c at the level of 0.05. It is in consistant with the pretty closed R-squared values form above. So we should reject full model and stick with reduced model.
+```{r}
+anova(m_a, m_c) 
+```
+
+(e) Write out the reduced model in equation form and interpret the coefficients. Be careful with the coefficients of the categorical vari- able.
+AS ShelveLoc's coefficient is significant, From m_c: for ShelveLoc Bad level, 
+Sales = 5.475226 + 0.092571CompPrice + 0.015785Income + 0.115903Advertising  - 0.095319Price  - 0.046128Age; 
+for ShelveLoc Good level, 
+Sales = 5.475226 + 0.092571CompPrice + 0.015785Income + 0.115903Advertising  - 0.095319Price  + 4.835675 - 0.046128Age; 
+for ShelveLoc Medium level, 
+Sales = 5.475226 + 0.092571CompPrice + 0.015785Income + 0.115903Advertising  - 0.095319Price + 1.951993 - 0.046128Age; 
+
+Holding other variables constant, coefficient of CompPrice means one unit of price increase by competitor at each location will lead to 0.092571 increase of mean of Unit sales (in thousands) at each location. 
+Coefficient of Income means one unit increase of community income level will lead to 0.015785 increase of mean of Unit sales at each location.
+Coefficient of Advertising means one unit increase of community income level will lead to 0.115903 increase of mean of Unit sales at each location.
+Coefficient of Price means one unit increase of Price company charges for car seats at each site will lead to 0.095319 decrease of mean of Unit sales at each location.
+Coefficient of Price means one unit increase of Average age of the local population will lead to 0.046128 decrease of mean of Unit sales at each location.
+Coefficient of ShelveLocGood means ShelveLoc with good quality will lead to 4.835675 increase of mean of Unit sales at each location compared with bad quality.
+Coefficient of ShelveLocGood means ShelveLoc with Medium quality will lead to 1.951993 increase of mean of Unit sales at each location compared with bad quality.
+
+
+(f) Add an interaction term between the categorical variable ShelveLoc and the variable Price to the reduced model. The coefficients of Price:ShelveLocGood represents the difference of slop of Price between ShelveLocGood and ShelveLocBad. The coefficients of Price:ShelveLocMedium represents the difference of slop of Price between ShelveLocMedium and ShelveLocBad.
+The p-values of Price:ShelveLocGood and Price:ShelveLocMedium are 0.3730, 0.4984 respectively. This suggests that there is no significant influence of ShelveLoc on the slop of Price. So the the interaction term is not necessary. 
+```{r}
+m_f <- lm(Sales ~ CompPrice + Income + Advertising  + Price  + ShelveLoc  + Age + ShelveLoc:Price, data= Carseats)
+summary(m_f)
+```
+
+(g) In the anova test, the p-value of the test is 0.6593 It suggests that the fitted model m_c is not significantly different from model m_f with interaction at the level of 0.05. So we should reject interaction model and stick reduced model with interaction term.
+```{r}
+anova(m_c, m_f) 
+```
